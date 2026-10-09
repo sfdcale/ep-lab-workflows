@@ -1,0 +1,25 @@
+name: Build affected projects
+
+on:
+  workflow_call:
+    inputs:
+      affected-plan:
+        description: JSON array of project names
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        project: ${{ fromJSON(inputs.affected-plan) }}
+    steps:
+      - name: Run the action for this project
+        uses: sfdcale/ep-lab-action@b149a0d2f5d75fa2c51e63129f737366f3ffd7d4
+        with:
+          project: ${{ matrix.project }}
