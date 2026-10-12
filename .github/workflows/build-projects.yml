@@ -19,7 +19,15 @@ jobs:
       matrix:
         project: ${{ fromJSON(inputs.affected-plan) }}
     steps:
+      - name: Keep base active so fail-fast behavior is visible
+        if: matrix.project == 'base'
+        run: sleep 20
       - name: Run the action for this project
         uses: sfdcale/ep-lab-action@b149a0d2f5d75fa2c51e63129f737366f3ffd7d4
         with:
           project: ${{ matrix.project }}
+      - name: Simulate a help project failure
+        if: matrix.project == 'help'
+        run: |
+          echo 'Intentional failure for the matrix exercise.'
+          exit 1
